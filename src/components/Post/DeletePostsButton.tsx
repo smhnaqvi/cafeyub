@@ -1,6 +1,7 @@
 "use client";
 
 import axios from "axios";
+import Button from "../Button";
 
 interface IDeleteAllPostsButtonProps {
   id?: number;
@@ -16,12 +17,9 @@ const DeletePostsButton: React.FC<IDeleteAllPostsButtonProps> = ({
   };
 
   return (
-    <button
-      className="my-4 bg-red hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
-      onClick={deletePosts}
-    >
+    <Button variant="danger" onClick={deletePosts}>
       {label}
-    </button>
+    </Button>
   );
 };
 

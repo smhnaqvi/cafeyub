@@ -21,4 +21,6 @@ model Post {
   cover     String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  isActice  Boolean  @default(false)
+  status    String   @default("draft")
 }

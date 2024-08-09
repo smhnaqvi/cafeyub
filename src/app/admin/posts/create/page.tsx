@@ -2,17 +2,12 @@
 
 import Input from "@/components/Input";
 import TextArea from "@/components/TextArea";
+import { IPostForm } from "@/types/post";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 
-interface ICreatePost {
-  title: string;
-  content: string;
-  cover: any;
-}
-
 export default function CreatePage() {
-  const methods = useForm<ICreatePost>();
+  const methods = useForm<IPostForm>();
   const {
     handleSubmit,
     register,
@@ -20,13 +15,11 @@ export default function CreatePage() {
     watch,
   } = methods;
 
-  const onSubmit = async (data: ICreatePost) => {
+  const onSubmit = async (data: IPostForm) => {
     const formdata = new FormData();
     formdata.append("title", data.title);
     formdata.append("content", data.content);
     formdata.append("image", data.cover[0]);
-
-    console.log(data.cover);
 
     await axios
       .post("/api/posts", formdata, {

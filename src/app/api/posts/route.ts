@@ -41,18 +41,19 @@ export async function POST(req: NextRequest) {
   const content = formData.get("content") as string;
   const image = formData.get("image") as File;
 
-  if (!title || !content || !image) {
-    return NextResponse.json(
-      { error: "Title, content, and image are required" },
-      { status: 400 },
-    );
+  if (!title) {
+    return NextResponse.json({ error: "title are required" }, { status: 400 });
   }
 
-  const buffer = await image.arrayBuffer();
-  const fileName = `${uuidv4()}${extname(image.name)}`;
-  const filePath = join("public/storage", fileName);
+  let fileName = "";
 
-  await fs.writeFile(filePath, Buffer.from(buffer));
+  console.log(image);
+  if (image) {
+    // const buffer = await image.arrayBuffer();
+    // const fileName = `${uuidv4()}${extname(image.name)}`;
+    // const filePath = join("public/storage", fileName);
+    // await fs.writeFile(filePath, Buffer.from(buffer));
+  }
 
   const newPost = await prisma.post
     .create({
