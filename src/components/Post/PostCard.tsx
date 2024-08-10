@@ -1,6 +1,6 @@
-import { IPost } from "@/app/admin/posts/page";
 import Image from "next/image";
 import DeletePostsButton from "./DeletePostsButton";
+import { IPost } from "@/types/post";
 
 export function PostCard({ post }: { post: IPost }) {
   return (

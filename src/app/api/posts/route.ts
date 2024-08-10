@@ -39,27 +39,106 @@ export async function POST(req: NextRequest) {
   const formData = await req.formData();
   const title = formData.get("title") as string;
   const content = formData.get("content") as string;
-  const image = formData.get("image") as File;
+  const image = formData.get("image") as File | null;
+  const latitude = formData.get("latitude") as string;
+  const longitude = formData.get("longitude") as string;
+  const address = formData.get("address") as string;
+  const city = formData.get("city") as string;
 
+  // Validation
   if (!title) {
-    return NextResponse.json({ error: "title are required" }, { status: 400 });
+    return NextResponse.json({ error: "Title is required" }, { status: 400 });
+  }
+
+  if (!content) {
+    return NextResponse.json({ error: "Content is required" }, { status: 400 });
+  }
+
+  if (!latitude || !longitude) {
+    return NextResponse.json(
+      { error: "Latitude and Longitude are required" },
+      { status: 400 },
+    );
+  }
+
+  if (!address) {
+    return NextResponse.json({ error: "Address is required" }, { status: 400 });
+  }
+
+  if (!city) {
+    return NextResponse.json({ error: "City is required" }, { status: 400 });
   }
 
   let fileName = "";
 
-  console.log(image);
-  if (image) {
-    // const buffer = await image.arrayBuffer();
-    // const fileName = `${uuidv4()}${extname(image.name)}`;
-    // const filePath = join("public/storage", fileName);
-    // await fs.writeFile(filePath, Buffer.from(buffer));
+  // Handle the image upload if it exists
+  if (image && image.size > 0) {
+    const buffer = await image.arrayBuffer();
+    fileName = `${uuidv4()}${extname(image.name)}`;
+    const filePath = join("public/storage", fileName);
+    await fs.writeFile(filePath, Buffer.from(buffer));
   }
 
   const newPost = await prisma.post
     .create({
-      data: { title, content, cover: fileName },
+      data: {
+        title,
+        content,
+        cover: fileName,
+        latitude: parseFloat(latitude),
+        longitude: parseFloat(longitude),
+        address,
+        city,
+      },
     })
     .catch((err) => console.log(err));
 
   return NextResponse.json(newPost, { status: 201 });
+}
+
+// PUT: Edit a specific post by id
+export async function PUT(req: NextRequest) {
+  const url = new URL(req.url);
+  const id = url.searchParams.get("id");
+
+  if (!id) {
+    return NextResponse.json({ error: "ID is required" }, { status: 400 });
+  }
+
+  const formData = await req.formData();
+  const image = formData.get("image") as File | null;
+
+  let updateData: any = {
+    title: formData.get("title") || "",
+    content: formData.get("content") || "",
+    latitude: Number(formData.get("latitude")),
+    longitude: Number(formData.get("longitude")),
+    address: formData.get("address") || "",
+    city: formData.get("city") || "",
+  };
+
+  let fileName = "";
+
+  // Handle the image upload if it exists
+  if (image && image.size > 0) {
+    const buffer = await image.arrayBuffer();
+    fileName = `${uuidv4()}${extname(image.name)}`;
+    const filePath = join("public/storage", fileName);
+    await fs.writeFile(filePath, Buffer.from(buffer));
+    updateData.image = fileName;
+  }
+
+  try {
+    const updatedPost = await prisma.post.update({
+      where: { id: Number(id) },
+      data: updateData,
+    });
+
+    return NextResponse.json(updatedPost, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: (error as Error).message },
+      { status: 500 },
+    );
+  }
 }
