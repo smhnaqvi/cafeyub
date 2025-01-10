@@ -2,7 +2,7 @@ import Image from "next/image";
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-async function Home() {
+export default async function Home() {
   const fetchAllPost = await prisma.post.findMany();
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24 main_page">
@@ -20,5 +20,3 @@ async function Home() {
     </main>
   );
 }
-
-export default Home;

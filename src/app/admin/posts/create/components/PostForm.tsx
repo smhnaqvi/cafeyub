@@ -1,9 +1,9 @@
 "use client";
+import Input from "@/components/Input";
+import TextArea from "@/components/TextArea";
 import { IPost, IPostForm } from "@/types/post";
 import axios from "axios";
 import { useForm } from "react-hook-form";
-import Input from "../Input";
-import TextArea from "../TextArea";
 
 export default function PostForm({
   data: post,

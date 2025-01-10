@@ -19,10 +19,10 @@ CREATE TABLE "new_Post" (
     "city" TEXT,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL,
-    "isActice" BOOLEAN NOT NULL DEFAULT false,
+    "isActive" BOOLEAN NOT NULL DEFAULT false,
     "status" TEXT NOT NULL DEFAULT 'draft'
 );
-INSERT INTO "new_Post" ("address", "city", "content", "cover", "createdAt", "id", "isActice", "latitude", "longitude", "status", "title", "updatedAt") SELECT "address", "city", "content", "cover", "createdAt", "id", "isActice", "latitude", "longitude", "status", "title", "updatedAt" FROM "Post";
+INSERT INTO "new_Post" ("address", "city", "content", "cover", "createdAt", "id", "isActive", "latitude", "longitude", "status", "title", "updatedAt") SELECT "address", "city", "content", "cover", "createdAt", "id", "isActive", "latitude", "longitude", "status", "title", "updatedAt" FROM "Post";
 DROP TABLE "Post";
 ALTER TABLE "new_Post" RENAME TO "Post";
 PRAGMA foreign_keys=ON;

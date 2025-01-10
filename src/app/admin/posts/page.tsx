@@ -13,7 +13,16 @@ async function PostsPage() {
     <div>
       <h1>Posts</h1>
 
-      <DeletePostsButton label="Delete All Posts" />
+      <div className="flex gap-4">
+        <Link
+          className="my-4 bg-red hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
+          href={`posts/create`}
+        >
+          Create New Post
+        </Link>
+
+        <DeletePostsButton label="Delete All Posts" />
+      </div>
 
       <table className="table-auto">
         <thead>
@@ -37,6 +46,12 @@ async function PostsPage() {
                     href={`posts/${post.id}`}
                   >
                     Edit
+                  </Link>
+                  <Link
+                    className="my-4 bg-red hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
+                    href={`/post/${post.id}`}
+                  >
+                    View
                   </Link>
                   <DeletePostsButton id={post.id} label="Delete" />
                 </div>

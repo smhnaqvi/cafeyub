@@ -19,6 +19,6 @@ export interface IPost {
   address: string;
   latitude: string;
   longitude: string;
-  isActice: boolean;
+  isActive: boolean;
   status: "draft" | "published";
 }

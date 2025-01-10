@@ -1,4 +1,4 @@
-import PostForm from "@/components/Post/PostForm";
+import PostForm from "@/app/admin/posts/create/components/PostForm";
 import { IPost } from "@/types/post";
 import { PrismaClient } from "@prisma/client";
 

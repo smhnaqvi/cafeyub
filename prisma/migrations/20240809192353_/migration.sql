@@ -8,7 +8,7 @@ CREATE TABLE "new_Post" (
     "cover" TEXT,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL,
-    "isActice" BOOLEAN NOT NULL DEFAULT false,
+    "isActive" BOOLEAN NOT NULL DEFAULT false,
     "status" TEXT NOT NULL DEFAULT 'draft'
 );
 INSERT INTO "new_Post" ("content", "cover", "createdAt", "id", "title", "updatedAt") SELECT "content", "cover", "createdAt", "id", "title", "updatedAt" FROM "Post";

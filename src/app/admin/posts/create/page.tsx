@@ -1,7 +1,7 @@
 "use client";
 
 import Input from "@/components/Input";
-import PostForm from "@/components/Post/PostForm";
+import PostForm from "@/app/admin/posts/create/components/PostForm";
 import TextArea from "@/components/TextArea";
 import { IPostForm } from "@/types/post";
 import axios from "axios";
