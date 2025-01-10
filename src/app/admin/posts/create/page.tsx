@@ -6,6 +6,9 @@ import TextArea from "@/components/TextArea";
 import { IPostForm } from "@/types/post";
 import axios from "axios";
 import { useForm } from "react-hook-form";
+import React from "react";
+import AdminPageHeader from "@/components/Header/AdminPageHeader";
+import ADMIN_PATH from "@/constant/AdminPath";
 
 export default function CreatePage() {
   const methods = useForm<IPostForm>();
@@ -40,5 +43,13 @@ export default function CreatePage() {
       });
   };
 
-  return <PostForm editMode={false} />;
+  return (
+    <React.Fragment>
+      <AdminPageHeader
+        backLink={ADMIN_PATH.posts.root}
+        title={"اضافه کردن کافه جدید"}
+      />
+      <PostForm editMode={false} />
+    </React.Fragment>
+  );
 }

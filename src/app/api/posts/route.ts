@@ -44,6 +44,9 @@ export async function POST(req: NextRequest) {
   const longitude = formData.get("longitude") as string;
   const address = formData.get("address") as string;
   const city = formData.get("city") as string;
+  const workingTime = formData.get("workingTime") as string;
+  const contactNumber = formData.get("contactNumber") as string | null;
+  const instagramId = formData.get("instagramId") as string | null;
 
   // Validation
   if (!title) {
@@ -89,6 +92,9 @@ export async function POST(req: NextRequest) {
         longitude: parseFloat(longitude),
         address,
         city,
+        workingTime: workingTime,
+        contactNumber,
+        instagramId,
       },
     })
     .catch((err) => console.log(err));
@@ -96,7 +102,6 @@ export async function POST(req: NextRequest) {
   return NextResponse.json(newPost, { status: 201 });
 }
 
-// PUT: Edit a specific post by id
 export async function PUT(req: NextRequest) {
   const url = new URL(req.url);
   const id = url.searchParams.get("id");
@@ -115,6 +120,9 @@ export async function PUT(req: NextRequest) {
     longitude: Number(formData.get("longitude")),
     address: formData.get("address") || "",
     city: formData.get("city") || "",
+    workingTime: formData.get("workingTime") || null,
+    contactNumber: formData.get("contactNumber") || null,
+    instagramId: formData.get("instagramId") || null,
   };
 
   let fileName = "";
@@ -125,7 +133,7 @@ export async function PUT(req: NextRequest) {
     fileName = `${uuidv4()}${extname(image.name)}`;
     const filePath = join("public/storage", fileName);
     await fs.writeFile(filePath, Buffer.from(buffer));
-    updateData.image = fileName;
+    updateData.cover = fileName;
   }
 
   try {

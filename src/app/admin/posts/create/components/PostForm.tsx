@@ -1,9 +1,38 @@
 "use client";
+
 import Input from "@/components/Input";
 import TextArea from "@/components/TextArea";
 import { IPost, IPostForm } from "@/types/post";
 import axios from "axios";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Card from "@/components/Post/Card";
+
+// Define the Zod schema
+const postSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  content: z.string().optional(),
+  address: z.string().optional(),
+  latitude: z.string().optional(),
+  longitude: z.string().optional(),
+  city: z.string().min(1, "City is required"),
+  workingTime: z.string().optional(),
+  contactNumber: z
+    .string()
+    .regex(/^\d+$/, "Contact number must be numeric")
+    .optional(),
+  instagramId: z.string().optional(),
+  cover: z
+    .any()
+    .refine(
+      (file) => (file?.length ? file[0]?.size <= 5 * 1024 * 1024 : true),
+      {
+        message: "Image must be less than 5MB",
+      },
+    )
+    .optional(),
+});
 
 export default function PostForm({
   data: post,
@@ -13,31 +42,40 @@ export default function PostForm({
   editMode: boolean;
 }) {
   const methods = useForm<IPostForm>({
+    resolver: zodResolver(postSchema), // Use Zod resolver
     defaultValues: {
-      title: post?.title,
-      address: post?.address,
-      latitude: post?.latitude,
-      longitude: post?.longitude,
+      title: post?.title || "",
+      address: post?.address || "",
+      latitude: post?.latitude || "",
+      longitude: post?.longitude || "",
       city: post?.city || "",
       content: post?.content || "",
+      workingTime: post?.workingTime || "",
+      contactNumber: post?.contactNumber || "",
+      instagramId: post?.instagramId || "",
     },
   });
+
   const {
     handleSubmit,
     register,
-    formState: { isSubmitting },
-    watch,
+    formState: { isSubmitting, errors },
   } = methods;
 
   const onSubmit = async (data: IPostForm) => {
     const formdata = new FormData();
     formdata.append("title", data.title);
-    formdata.append("content", data.content);
-    formdata.append("latitude", data.latitude);
-    formdata.append("longitude", data.longitude);
-    formdata.append("address", data.address);
+    formdata.append("content", data.content || "");
+    formdata.append("latitude", data.latitude || "");
+    formdata.append("longitude", data.longitude || "");
+    formdata.append("address", data.address || "");
     formdata.append("city", data.city);
-    formdata.append("image", data.cover[0]);
+    formdata.append("workingTime", data.workingTime || "");
+    formdata.append("contactNumber", data.contactNumber || "");
+    formdata.append("instagramId", data.instagramId || "");
+    if (data.cover) {
+      formdata.append("image", data.cover[0]);
+    }
 
     await (
       editMode && post
@@ -61,36 +99,54 @@ export default function PostForm({
   };
 
   return (
-    <div className="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-md">
+    <Card>
       <form
         className={` ${isSubmitting ? "opacity-50" : ""}`}
         onSubmit={handleSubmit(onSubmit)}
       >
-        <h2 className="text-2xl font-semibold mb-6 text-gray-800">
-          {editMode ? "Edit Post" : "Create New Post"}
-        </h2>
-
         <div className="mb-4">
-          <Input label="Title" {...register("title")} />
+          <Input label="عنوان" {...register("title")} />
+          {errors.title && (
+            <p className="text-red-500">{errors.title.message}</p>
+          )}
         </div>
 
         <div className="mb-4">
-          <Input label="Image" {...register("cover")} type="file" />
+          <Input label="تصویر" {...register("cover")} type="file" />
+          {errors.cover && (
+            <p className="text-red-500">{errors.cover.message?.toString()}</p>
+          )}
         </div>
 
         <div className="mb-4">
-          <TextArea label="Content" {...register("content")} />
+          <TextArea label="توضیحات" {...register("content")} />
         </div>
 
         <div className="mb-4">
-          <Input label="Address" {...register("address")} />
+          <Input label="آدرس" {...register("address")} />
         </div>
 
         <div className="mb-4">
-          <Input label="City" {...register("city")} />
+          <Input label="شهر" {...register("city")} />
+          {errors.city && <p className="text-red-500">{errors.city.message}</p>}
         </div>
 
-        <div className="mb-4 flex space-x-4">
+        <div className="mb-4">
+          <Input label="ساعت فعالیت" {...register("workingTime")} />
+        </div>
+
+        <div className="mb-4">
+          <Input label="تماس" {...register("contactNumber")} />
+          {errors.contactNumber && (
+            <p className="text-red-500">{errors.contactNumber.message}</p>
+          )}
+        </div>
+
+        <div className="mb-4">
+          <Input label="آیدی اینستاگرام" {...register("instagramId")} />
+        </div>
+
+        <div className="mb-4 flex gap-4">
           <div className="w-1/2">
             <Input label="Latitude" {...register("latitude")} />
           </div>
@@ -107,14 +163,14 @@ export default function PostForm({
           >
             {isSubmitting
               ? editMode
-                ? "Updating..."
-                : "Creating..."
+                ? "درحال بروزرسانی کافه..."
+                : "درحال ثبت کافه..."
               : editMode
-                ? "Update Post"
-                : "Create Post"}
+                ? "ویرایش کافه"
+                : "ثبت کافه"}
           </button>
         </div>
       </form>
-    </div>
+    </Card>
   );
 }

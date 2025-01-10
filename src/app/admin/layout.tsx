@@ -3,5 +3,9 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <div className="container mx-auto">{children}</div>;
+  return (
+    <div className="">
+      <div className="pb-10">{children}</div>
+    </div>
+  );
 }

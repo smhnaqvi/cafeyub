@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-async function AdminPage() {
+async function MainPage() {
   return (
     <>
       <Link href={"/admin/posts"}>posts</Link>
@@ -8,4 +8,4 @@ async function AdminPage() {
   );
 }
 
-export default AdminPage;
+export default MainPage;
