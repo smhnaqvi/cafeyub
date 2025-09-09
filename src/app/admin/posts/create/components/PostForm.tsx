@@ -26,7 +26,7 @@ const postSchema = z.object({
   cover: z
     .any()
     .refine(
-      (file) => (file?.length ? file[0]?.size <= 5 * 1024 * 1024 : true),
+      (files) => (files?.length ? files[0]?.size <= 5 * 1024 * 1024 : true),
       {
         message: "Image must be less than 5MB",
       },
@@ -73,12 +73,15 @@ export default function PostForm({
     formdata.append("workingTime", data.workingTime || "");
     formdata.append("contactNumber", data.contactNumber || "");
     formdata.append("instagramId", data.instagramId || "");
-    if (data.cover) {
-      formdata.append("image", data.cover[0]);
+
+    // Check if files exist and append the first file
+    const files = data.cover as FileList;
+    if (files && files.length > 0) {
+      formdata.append("image", files[0]);
     }
 
-    await (
-      editMode && post
+    try {
+      const response = await (editMode && post
         ? axios.put("/api/posts?id=" + post.id, formdata, {
             headers: {
               "Content-Type": "multipart/form-data",
@@ -88,20 +91,18 @@ export default function PostForm({
             headers: {
               "Content-Type": "multipart/form-data",
             },
-          })
-    )
-      .then((response) => {
-        console.log({ response });
-      })
-      .catch((err) => {
-        console.error({ err });
-      });
+          }));
+      console.log({ response });
+    } catch (err) {
+      console.error({ err });
+    }
   };
 
   return (
     <Card>
       <form
         className={` ${isSubmitting ? "opacity-50" : ""}`}
+        encType="multipart/form-data"
         onSubmit={handleSubmit(onSubmit)}
       >
         <div className="mb-4">
@@ -112,7 +113,12 @@ export default function PostForm({
         </div>
 
         <div className="mb-4">
-          <Input label="تصویر" {...register("cover")} type="file" />
+          <input
+            className="w-full p-2 border rounded"
+            {...register("cover")}
+            type="file"
+            accept="image/*"
+          />
           {errors.cover && (
             <p className="text-red-500">{errors.cover.message?.toString()}</p>
           )}

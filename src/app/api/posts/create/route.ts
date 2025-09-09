@@ -13,7 +13,7 @@ export const config = {
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
-    const file = formData.get("file") as File | null;
+    const file = formData.get("image") as File | null;
 
     console.log("---------->", file); // Log to inspect the file object
 
