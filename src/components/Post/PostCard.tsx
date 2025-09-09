@@ -19,7 +19,7 @@ export function PostCard({ post }: { post: IPost }) {
         <p className="text-gray-700 text-base">{post.content}</p>
       </div>
       <div className="px-6 pt-4 pb-2">
-        <DeletePostsButton id={post.id} label="Delete" />
+        <DeletePostsButton id={post.id} />
       </div>
     </div>
   );

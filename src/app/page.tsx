@@ -7,19 +7,20 @@ const prisma = new PrismaClient();
 export default async function Home({
   searchParams,
 }: {
-  searchParams: { search?: string };
+  searchParams: Promise<{ search?: string }>;
 }) {
+  const resolvedSearchParams = await searchParams;
   const fetchAllPost = await prisma.post.findMany({
     where: {
       OR: [
         {
           title: {
-            contains: searchParams.search || "",
+            contains: resolvedSearchParams.search || "",
           },
         },
         {
           address: {
-            contains: searchParams.search || "",
+            contains: resolvedSearchParams.search || "",
           },
         },
       ],
@@ -35,7 +36,7 @@ export default async function Home({
         <div className="flex gap-2">
           <input
             name="search"
-            defaultValue={searchParams.search}
+            defaultValue={resolvedSearchParams.search}
             placeholder="Search posts..."
             className="flex-1 p-2 border rounded"
           />

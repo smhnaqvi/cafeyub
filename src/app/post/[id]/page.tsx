@@ -1,10 +1,15 @@
 import { PrismaClient } from "@prisma/client";
 import { notFound } from "next/navigation";
+import Image from "next/image";
 
 const prisma = new PrismaClient();
 
-export default async function PostPage({ params }: { params: { id: number } }) {
-  const { id } = params;
+export default async function PostPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
 
   // Fetch the post by id
   const post = await prisma.post.findUnique({
@@ -21,14 +26,15 @@ export default async function PostPage({ params }: { params: { id: number } }) {
   return (
     <div className="max-w-2xl mx-auto mt-8 p-6 bg-white rounded-lg shadow-lg">
       <div className="relative w-full h-64 mb-6">
-        <img
+        <Image
           src={
             post.cover
               ? `/storage/${post.cover}`
               : "https://placehold.co/600x400"
           }
           alt={post.title}
-          className="w-full h-full object-cover rounded-lg"
+          fill
+          className="object-cover rounded-lg"
         />
       </div>
       <h1 className="text-3xl font-bold mb-4">{post.title}</h1>
